@@ -1,8 +1,10 @@
+import Navbar from "./components/Navbar";
+
 function App() {
   return (
-    <h1 className="text-5xl font-bold text-blue-500">
-      Tailwind Working
-    </h1>
+    <div className="min-h-screen bg-gray-50">
+      <Navbar />
+    </div>
   );
 }
 
