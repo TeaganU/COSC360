@@ -8,7 +8,7 @@ function Navbar() {
       <div className="flex gap-6">
         <button>Home</button>
         <button>Skills</button>
-        <button>Login</button>
+        <button class="cursor-pointer">Login</button>
         <button className="bg-black text-white px-4 py-1 rounded">
           Sign Up
         </button>
