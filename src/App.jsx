@@ -12,6 +12,7 @@ function App() {
         <Route path="/skills" element={<div className="p-8">Skills</div>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<div className="p-8">Signup page</div>} />
+        <Route path="/profile" element={<div className="p-8">Profile page</div>} />
       </Routes>
       <main className="flex-1">
       </main>
