@@ -3,9 +3,8 @@
   "version": "1.0.0",
   "description": "COSC360 - Project Proposal\r Owen Strolle - 68489996, Teagan Urquhart - 21161880",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "concurrently \"npm run dev --prefix client\" \"node server/src/index.js\""
   },
   "repository": {
     "type": "git",
@@ -17,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/TeaganU/Cache_Me_Outside/issues"
   },
-  "homepage": "https://github.com/TeaganU/Cache_Me_Outside#readme"
+  "homepage": "https://github.com/TeaganU/Cache_Me_Outside#readme",
+  "dependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
