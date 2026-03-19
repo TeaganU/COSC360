@@ -1,4 +1,4 @@
-import { getAllPosts } from "./posts.repository.js";
+import { addPost, getAllPosts } from "./posts.repository.js";
 
 export function searchPosts({ search, category, type }) {
   let posts = getAllPosts();
@@ -19,4 +19,20 @@ export function searchPosts({ search, category, type }) {
   }
 
   return posts;
+}
+
+export function createPostRecord({ type, category, title, content }) {
+  if (!title || !content) {
+    throw new Error("Missing required fields");
+  }
+
+  const newPost = {
+    id: Date.now(),
+    type,
+    category,
+    title,
+    content
+  };
+
+  return addPost(newPost);
 }
