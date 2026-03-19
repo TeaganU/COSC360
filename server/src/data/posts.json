@@ -19,7 +19,7 @@
   },
   {
     "id": 3,
-    "author": "Placeholder Author",
+    "author": "Owen",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Discussion",
     "category": "Hiking",
@@ -28,7 +28,7 @@
   },
   {
     "id": 4,
-    "author": "Placeholder Author",
+    "author": "Jane Doe",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Skill Guide",
     "category": "Camping",
@@ -37,7 +37,7 @@
   },
   {
     "id": 5,
-    "author": "Placeholder Author",
+    "author": "Teagan",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Event",
     "category": "Running",
@@ -46,7 +46,7 @@
   },
   {
     "id": 6,
-    "author": "Placeholder Author",
+    "author": "John Doe",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Discussion",
     "category": "Kayaking",
@@ -55,7 +55,7 @@
   },
   {
     "id": 7,
-    "author": "Placeholder Author",
+    "author": "Santa",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Skill Guide",
     "category": "Skiing",
@@ -64,7 +64,7 @@
   },
   {
     "id": 8,
-    "author": "Placeholder Author",
+    "author": "COSC360 Man",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Question",
     "category": "Rock Climbing",
@@ -73,7 +73,7 @@
   },
   {
     "id": 9,
-    "author": "Placeholder Author",
+    "author": "Someone",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Discussion",
     "category": "Mountaineering",
@@ -82,7 +82,7 @@
   },
   {
     "id": 10,
-    "author": "Placeholder Author",
+    "author": "Someone2",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Skill Guide",
     "category": "Hiking",
