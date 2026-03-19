@@ -5,13 +5,15 @@ export async function searchPosts({ search, category, type }) {
 
   if (search) {
     const normalizedSearch = search.toLowerCase();
+    const matchesSearch = value =>
+      String(value ?? "").toLowerCase().includes(normalizedSearch);
 
     posts = posts.filter(post =>
-      post.title.toLowerCase().includes(normalizedSearch) ||
-      post.content.toLowerCase().includes(normalizedSearch) ||
-      post.author.toLowerCase().includes(normalizedSearch) ||
-      post.category.toLowerCase().includes(normalizedSearch) ||
-      post.type.toLowerCase().includes(normalizedSearch)
+      matchesSearch(post.title) ||
+      matchesSearch(post.content) ||
+      matchesSearch(post.author) ||
+      matchesSearch(post.category) ||
+      matchesSearch(post.type)
     );
   }
 
@@ -31,8 +33,16 @@ export function createPostRecord({ type, category, title, content }) {
     throw new Error("Missing required fields");
   }
 
+  const posts = getAllPosts();
+  const maxId = posts.reduce(
+    (currentMax, post) => Math.max(currentMax, Number(post.id) || 0),
+    0
+  );
+
   const newPost = {
-    id: Date.now(),
+    id: maxId + 1,
+    author: "Guest",
+    timestamp: new Date().toISOString(),
     type,
     category,
     title,
