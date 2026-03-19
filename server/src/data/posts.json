@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "author": "Placeholder Author",
+    "author": "John Doe",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Skill Guide",
     "category": "Rock Climbing",
@@ -10,7 +10,7 @@
   },
   {
     "id": 2,
-    "author": "Placeholder Author",
+    "author": "Jane Doe",
     "timestamp": "2026-03-18T12:00:00Z",
     "type": "Event",
     "category": "Skiing",
@@ -70,7 +70,7 @@
     "category": "Rock Climbing",
     "title": "How do I improve grip strength for climbing?",
     "content": "Any tips or exercises that helped you improve grip strength?"
-    },
+  },
   {
     "id": 9,
     "author": "Placeholder Author",
