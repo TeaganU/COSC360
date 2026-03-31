@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import postsRoutes from "./modules/posts/posts.routes.js";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
 const app = express();
 
@@ -16,3 +18,9 @@ app.get("/", (req, res) => {
 app.listen(4000, () => {
   console.log("Server running on http://localhost:4000");
 });
+
+dotenv.config();
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => console.log(err));

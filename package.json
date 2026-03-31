@@ -19,6 +19,8 @@
   "homepage": "https://github.com/TeaganU/Cache_Me_Outside#readme",
   "dependencies": {
     "concurrently": "^9.2.1",
-    "mongodb": "^7.1.1"
+    "dotenv": "^17.3.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3"
   }
 }
