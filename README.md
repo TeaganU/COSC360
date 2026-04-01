@@ -9,8 +9,6 @@ Install packages for the root, client, and server:
 
 ```bash
 npm install
-npm install --prefix client
-npm install --prefix server
 ```
 
 This command:
