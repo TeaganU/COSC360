@@ -6,49 +6,94 @@ dotenv.config();
 
 const samplePosts = [
   {
-    id: 1,
-    author: "Teagan",
-    timestamp: new Date().toISOString(),
-    type: "Skill Guide",
-    category: "Rock Climbing",
-    title: "Beginner belay tips",
-    content: "Always double check harness, knot, and belay device before climbing."
+    "id": 1,
+    "author": "John Doe",
+    "timestamp": new Date().toISOString(),
+    "type": "Skill Guide",
+    "category": "Rock Climbing",
+    "title": "Rock Climbing Basics",
+    "content": "Learn how to climb safely."
   },
   {
-    id: 2,
-    author: "Jonah",
-    timestamp: new Date().toISOString(),
-    type: "Event",
-    category: "Skiing",
-    title: "Big White weekend trip",
-    content: "Looking for people interested in sharing rides and skiing this weekend."
+    "id": 2,
+    "author": "Jane Doe",
+    "timestamp": new Date().toISOString(),
+    "type": "Event",
+    "category": "Skiing",
+    "title": "Backcountry Ski Trip",
+    "content": "Join us on a ski trip in the Revelstoke backcountry."
   },
   {
-    id: 3,
-    author: "Aakash",
-    timestamp: new Date().toISOString(),
-    type: "Question",
-    category: "Hiking",
-    title: "Best beginner hikes near Kelowna?",
-    content: "I am looking for easier hikes with good views and not too much elevation."
+    "id": 3,
+    "author": "Owen",
+    "timestamp": new Date().toISOString(),
+    "type": "Discussion",
+    "category": "Hiking",
+    "title": "Best Hiking Trails Near Kelowna",
+    "content": "Looking for scenic hikes around the Okanagan."
   },
   {
-    id: 4,
-    author: "Parsa",
-    timestamp: new Date().toISOString(),
-    type: "Skill Guide",
-    category: "Camping",
-    title: "Camp stove basics",
-    content: "Bring fuel, check wind direction, and cook on a stable flat surface."
+    "id": 4,
+    "author": "Jane Doe",
+    "timestamp": new Date().toISOString(),
+    "type": "Skill Guide",
+    "category": "Camping",
+    "title": "How to Set Up a Campsite",
+    "content": "Tips for choosing and setting up a safe campsite."
   },
   {
-    id: 5,
-    author: "Thanmay",
-    timestamp: new Date().toISOString(),
-    type: "Event",
-    category: "Mountain Biking",
-    title: "Trail ride meetup",
-    content: "Anyone want to meet for a beginner-friendly ride on Saturday morning?"
+    "id": 5,
+    "author": "Teagan",
+    "timestamp": new Date().toISOString(),
+    "type": "Event",
+    "category": "Running",
+    "title": "Trail Running Meetup",
+    "content": "Join our weekly group trail run this Sunday."
+  },
+  {
+    "id": 6,
+    "author": "John Doe",
+    "timestamp": new Date().toISOString(),
+    "type": "Discussion",
+    "category": "Kayaking",
+    "title": "Best Lakes for Kayaking",
+    "content": "Where are the best calm lakes for kayaking in BC?"
+  },
+  {
+    "id": 7,
+    "author": "Santa",
+    "timestamp": new Date().toISOString(),
+    "type": "Skill Guide",
+    "category": "Skiing",
+    "title": "Beginner Skiing Tips",
+    "content": "Learn balance, turning, and stopping techniques."
+  },
+  {
+    "id": 8,
+    "author": "COSC360 Man",
+    "timestamp": new Date().toISOString(),
+    "type": "Question",
+    "category": "Rock Climbing",
+    "title": "How do I improve grip strength for climbing?",
+    "content": "Any tips or exercises that helped you improve grip strength?"
+  },
+  {
+    "id": 9,
+    "author": "Someone",
+    "timestamp": new Date().toISOString(),
+    "type": "Discussion",
+    "category": "Mountaineering",
+    "title": "Getting Started with Mountaineering",
+    "content": "What gear and skills do beginners need?"
+  },
+  {
+    "id": 10,
+    "author": "Someone2",
+    "timestamp": new Date().toISOString(),
+    "type": "Skill Guide",
+    "category": "Hiking",
+    "title": "Packing Essentials for Day Hikes",
+    "content": "What to bring on a safe and enjoyable day hike."
   }
 ];
 
