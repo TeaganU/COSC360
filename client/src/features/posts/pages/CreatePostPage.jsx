@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 function CreatePostPage() {
     const navigate = useNavigate();
     const [form, setForm] = useState({
-        type: "question",
+        type: "Question",
         category: "Hiking",
         title: "",
         content: ""
@@ -41,7 +41,7 @@ function CreatePostPage() {
             setMessage(data.message);
 
             setForm({
-                type: "question",
+                type: "Question",
                 category: "Hiking",
                 title: "",
                 content: ""
@@ -61,7 +61,7 @@ function CreatePostPage() {
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <select name="type" value={form.type} onChange={handleChange}>
                     <option value="Question">Question</option>
-                    <option value="Skill guide">Skill Guide</option>
+                    <option value="Skill Guide">Skill Guide</option>
                     <option value="Discussion">Discussion</option>
                     <option value="Event">Event</option>
                 </select>
