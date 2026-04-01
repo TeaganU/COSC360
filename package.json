@@ -1,10 +1,15 @@
 {
   "name": "cache_me_outside",
   "version": "1.0.0",
+  "private": true,
   "description": "COSC360 - Project Proposal\r Owen Strolle - 68489996, Teagan Urquhart - 21161880",
   "main": "index.js",
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "start": "concurrently \"npm run dev --prefix client\" \"node server/src/index.js\""
+    "start": "concurrently \"npm run dev --workspace client\" \"npm run start --workspace server\""
   },
   "repository": {
     "type": "git",
