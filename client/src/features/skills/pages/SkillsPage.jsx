@@ -1,28 +1,13 @@
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { PATHS } from "../../../app/Routes";
-import { RelativeTime } from "../../../lib/RelativeTime";
-
-const categoryOptions = [
-    "All",
-    "Hiking",
-    "Skiing",
-    "Rock Climbing",
-    "Mountaineering",
-    "Kayaking",
-    "Running",
-    "Camping"
-];
-
-const typeOptions = [
-    "All",
-    "Discussion",
-    "Skill Guide",
-    "Question",
-    "Event"
-];
-
-function SkillsPage() {
+import SkillsFilters from "../components/SkillsFilters";
+import SkillsHeader from "../components/SkillsHeader";
+import SkillsPostList from "../components/SkillsPostList";
+import {
+    categoryOptions,
+    postTypeOptions
+} from "../components/skillsOptions";
+export default function SkillsPage() {
     const [searchParams] = useSearchParams();
     const searchText = searchParams.get("search") || "";
     const [results, setResults] = useState([]);
@@ -30,14 +15,6 @@ function SkillsPage() {
     const [error, setError] = useState("");
     const [selectedCategories, setSelectedCategories] = useState(["All"]);
     const [selectedTypes, setSelectedTypes] = useState(["All"]);
-    const [editingPostId, setEditingPostId] = useState(null);
-    const [editForm, setEditForm] = useState({
-        title: "",
-        content: "",
-        category: "Hiking",
-        type: "question"
-    });
-    const [actionMessage, setActionMessage] = useState("");
 
     useEffect(() => {
         async function fetchResults() {
@@ -105,283 +82,31 @@ function SkillsPage() {
         setSelectedValues(nextValues.length > 0 ? nextValues : ["All"]);
     };
 
-    const startEdit = (post) => {
-        setEditingPostId(post.id);
-        setEditForm({
-            title: post.title || "",
-            content: post.content || "",
-            category: post.category || "Hiking",
-            type: post.type || "question"
-        });
-        setActionMessage("");
-    };
-
-    const cancelEdit = () => {
-        setEditingPostId(null);
-        setActionMessage("");
-    };
-
-    const handleEditChange = (e) => {
-        setEditForm({
-            ...editForm,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const saveEdit = async (postId) => {
-        try {
-            const response = await fetch(`/api/posts/${postId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(editForm)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not update post.");
-                return;
-            }
-
-            setResults((currentResults) =>
-                currentResults.map((post) =>
-                    post.id === postId ? data.post : post
-                )
-            );
-            setEditingPostId(null);
-            setActionMessage("");
-        } catch {
-            setActionMessage("Could not update post.");
-        }
-    };
-
-    const deletePost = async (postId) => {
-        try {
-            const response = await fetch(`/api/posts/${postId}`, {
-                method: "DELETE"
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not delete post.");
-                return;
-            }
-
-            setResults((currentResults) =>
-                currentResults.filter((post) => post.id !== postId)
-            );
-
-            if (editingPostId === postId) {
-                setEditingPostId(null);
-            }
-
-            setActionMessage("");
-        } catch {
-            setActionMessage("Could not delete post.");
-        }
-    };
-
     return (
         <div className="min-h-screen bg-gray-100">
             <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-8 md:flex-row">
-                <aside className="w-full border border-gray-300 bg-white p-5 md:max-w-xs">
-                    <h2 className="text-2xl font-semibold text-gray-900">Filters</h2>
-
-                    <section className="mt-6">
-                        <h3 className="text-lg font-medium text-gray-900">Categories</h3>
-                        <div className="mt-3 space-y-2 text-base text-gray-800">
-                            {categoryOptions.map((category) => (
-                                <label key={category} className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedCategories.includes(category)}
-                                        onChange={() => toggleFilter(category, selectedCategories, setSelectedCategories)}
-                                        className="h-4 w-4 border-gray-400"
-                                    />
-                                    <span>{category}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="mt-6">
-                        <h3 className="text-lg font-medium text-gray-900">Post Type</h3>
-                        <div className="mt-3 space-y-2 text-base text-gray-800">
-                            {typeOptions.map((type) => (
-                                <label key={type} className="flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedTypes.includes(type)}
-                                        onChange={() => toggleFilter(type, selectedTypes, setSelectedTypes)}
-                                        className="h-4 w-4 border-gray-400"
-                                    />
-                                    <span>{type}</span>
-                                </label>
-                            ))}
-                        </div>
-                    </section>
-                </aside>
+                <SkillsFilters
+                    categoryOptions={categoryOptions}
+                    postTypeOptions={postTypeOptions}
+                    selectedCategories={selectedCategories}
+                    selectedTypes={selectedTypes}
+                    onToggleCategory={(category) =>
+                        toggleFilter(category, selectedCategories, setSelectedCategories)
+                    }
+                    onToggleType={(type) =>
+                        toggleFilter(type, selectedTypes, setSelectedTypes)
+                    }
+                />
 
                 <main className="min-w-0 flex-1">
-                    <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                        <div>
-                            <p className="text-sm text-gray-500">
-                                <Link to="/" className="hover:underline">
-                                    Home
-                                </Link>{" "}
-                                &gt;{" "}
-                                <Link to="/skills" className="hover:underline">
-                                    Skills
-                                </Link>
-                            </p>
-                            <h1 className="mt-2 text-3xl font-semibold text-gray-900">
-                                Browse Skills
-                            </h1>
-                            {searchText && (
-                                <p className="mt-2 text-sm text-gray-600">
-                                    Search results for: {searchText}
-                                </p>
-                            )}
-                        </div>
-
-                        <Link
-                            to={PATHS.CREATEPOST}
-                            className="inline-block bg-black px-4 py-2 text-white"
-                        >
-                            Create Post
-                        </Link>
-                    </div>
+                    <SkillsHeader searchText={searchText} />
 
                     {loading && <p className="text-gray-600">Loading...</p>}
 
                     {error && <p className="text-red-600">{error}</p>}
-                    {actionMessage && <p className="mb-4 text-red-600">{actionMessage}</p>}
 
                     {!loading && !error && results.length > 0 && (
-                        <div className="space-y-4">
-                            {results.map((post) => (
-                                <article
-                                    key={post._id ?? post.id}
-                                    className="border border-gray-300 bg-white p-4"
-                                >
-                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                        <div className="text-sm text-gray-600">
-                                            <span>{post.category || "Category"}</span>
-                                            <span className="mx-2">|</span>
-                                            <span>{post.type || "Type"}</span>
-                                        </div>
-                                        <span className="text-sm text-gray-500">
-                                            {RelativeTime(post.timestamp)}
-                                        </span>
-                                    </div>
-
-                                    <h2 className="mt-3 text-2xl font-semibold text-gray-900">
-                                        {post.title}
-                                    </h2>
-
-                                    {editingPostId === post.id ? (
-                                        <div className="mt-3 flex flex-col gap-3">
-                                            <input
-                                                type="text"
-                                                name="title"
-                                                value={editForm.title}
-                                                onChange={handleEditChange}
-                                                className="border border-gray-300 px-3 py-2"
-                                            />
-
-                                            <div className="flex flex-col gap-3 sm:flex-row">
-                                                <select
-                                                    name="category"
-                                                    value={editForm.category}
-                                                    onChange={handleEditChange}
-                                                    className="border border-gray-300 px-3 py-2"
-                                                >
-                                                    <option value="Hiking">Hiking</option>
-                                                    <option value="Skiing">Skiing</option>
-                                                    <option value="Rock Climbing">Rock Climbing</option>
-                                                    <option value="Mountaineering">Mountaineering</option>
-                                                    <option value="Kayaking">Kayaking</option>
-                                                    <option value="Running">Running</option>
-                                                    <option value="Camping">Camping</option>
-                                                </select>
-
-                                                <select
-                                                    name="type"
-                                                    value={editForm.type}
-                                                    onChange={handleEditChange}
-                                                    className="border border-gray-300 px-3 py-2"
-                                                >
-                                                    <option value="question">Question</option>
-                                                    <option value="skill guide">Skill Guide</option>
-                                                    <option value="discussion">Discussion</option>
-                                                    <option value="event">Event</option>
-                                                </select>
-                                            </div>
-
-                                            <textarea
-                                                name="content"
-                                                value={editForm.content}
-                                                onChange={handleEditChange}
-                                                rows={5}
-                                                className="border border-gray-300 px-3 py-2"
-                                            />
-
-                                            <div className="flex gap-3">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => saveEdit(post.id)}
-                                                    className="bg-black px-4 py-2 text-white"
-                                                >
-                                                    Save
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={cancelEdit}
-                                                    className="border border-gray-300 px-4 py-2"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
-                                            {post.content}
-                                        </p>
-                                    )}
-
-                                    <div className="mt-4 border-t border-gray-200 pt-3">
-                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <div className="h-8 w-8 rounded-full bg-gray-200" />
-                                                <span className="text-sm font-medium text-gray-800">
-                                                    {post.author || "Author Name"}
-                                                </span>
-                                            </div>
-
-                                            <div className="flex gap-3">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => startEdit(post)}
-                                                    className="border border-gray-300 px-3 py-1 text-sm"
-                                                >
-                                                    Edit
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => deletePost(post.id)}
-                                                    className="border border-red-300 px-3 py-1 text-sm text-red-600"
-                                                >
-                                                    Delete
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
+                        <SkillsPostList posts={results} />
                     )}
 
                     {!loading && !error && results.length === 0 && (
@@ -396,5 +121,3 @@ function SkillsPage() {
         </div>
     );
 }
-
-export default SkillsPage;

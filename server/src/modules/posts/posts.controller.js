@@ -1,5 +1,6 @@
 import {
   createPostRecord,
+  getPostRecord,
   searchPosts,
   updatePostRecord,
   deletePostRecord
@@ -13,6 +14,15 @@ export async function getPosts(req, res) {
     res.json(results);
   } catch (err) {
     res.status(500).json({ message: "Error fetching posts" });
+  }
+}
+
+export async function getPost(req, res) {
+  try {
+    const post = await getPostRecord(req.params.id);
+    res.json(post);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
   }
 }
 
