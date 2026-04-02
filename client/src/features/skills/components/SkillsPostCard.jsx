@@ -6,7 +6,9 @@ export default function SkillsPostCard({
     post
 }) {
     return (
-        <article className="border border-gray-300 bg-white p-4">
+        <Link to={PATHS.POST(post.id)}
+            className="flex flex-col bg-white border border-gray-300 p-4
+            hover:cursor-pointer hover:border-gray-500 hover:-translate-y-0.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div className="text-sm text-gray-600">
                     <span>{post.category || "Category"}</span>
@@ -18,7 +20,7 @@ export default function SkillsPostCard({
                 </span>
             </div>
 
-            <Link to={PATHS.POST(post.id)} className="block">
+            <div className="block">
                 <h2 className="mt-3 text-2xl font-semibold text-gray-900">
                     {post.title}
                 </h2>
@@ -26,7 +28,7 @@ export default function SkillsPostCard({
                 <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
                     {post.content}
                 </p>
-            </Link>
+            </div>
 
             <div className="mt-4 border-t border-gray-200 pt-3">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -44,6 +46,6 @@ export default function SkillsPostCard({
                     </div>
                 </div>
             </div>
-        </article>
+        </Link>
     );
 }
