@@ -1,8 +1,11 @@
+import { Link } from "react-router-dom";
 import { RelativeTime } from "../../../lib/RelativeTime";
+import { PATHS } from "../../../app/Routes";
 
 export default function TrendingSkillsCard({ post }) {
     return (
-        <section className="flex flex-col bg-white border border-gray-300 w-65 min-w-50 p-2 rounded-lg gap-y-2
+        <Link to={PATHS.POST(post.id)}
+        className="flex flex-col bg-white border border-gray-300 w-65 min-w-50 p-2 rounded-lg gap-y-2
         hover:cursor-pointer hover:border-gray-500 hover:-translate-y-0.5">
             <div className="flex justify-between text-xs">
                 <span>
@@ -21,6 +24,6 @@ export default function TrendingSkillsCard({ post }) {
                     {post.author || "Author Name"}
                 </span>
             </div>
-        </section>
+        </Link>
     )
 }
