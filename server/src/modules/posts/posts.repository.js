@@ -52,6 +52,10 @@ export async function findPosts(filters = {}) {
   return await Post.find(query).sort({ timestamp: -1 }).lean();
 }
 
+export async function findPostById(id) {
+  return await Post.findOne({ id }).lean();
+}
+
 export async function addPost(newPost) {
   // Generate the next numeric id based on the current highest one.
   const max = await Post.findOne().sort({ id: -1 }).select("id").lean();
@@ -61,6 +65,8 @@ export async function addPost(newPost) {
     id: nextId,
     author: "Guest",
     timestamp: new Date().toISOString(),
+    likes: 0,
+    comments: [],
     ...newPost
   });
 
