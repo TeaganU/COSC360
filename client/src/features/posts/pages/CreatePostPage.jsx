@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiClient } from "../../../lib/ApiClient";
 
 function CreatePostPage() {
     const navigate = useNavigate();
@@ -21,22 +22,10 @@ function CreatePostPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage("");
 
         try {
-            const res = await fetch("/api/posts", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(form)
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setMessage(data.message || "There was an error creating the post");
-                return;
-            }
+            const data = await apiClient.post("/posts", form);
 
             setMessage(data.message);
 
@@ -50,13 +39,13 @@ function CreatePostPage() {
             navigate("/skills");
         } catch (err) {
             console.error(err);
-            setMessage("There was an error createing the post");
+            setMessage(err?.data?.message || "There was an error creating the post");
         }
     };
 
     return (
-        <div className="p-8 max-w-xl mx-auto">
-            <h1 className="text-2xl mb-4">Create Post</h1>
+        <div className="mx-auto max-w-xl p-8">
+            <h1 className="mb-4 text-2xl">Create Post</h1>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                 <select name="type" value={form.type} onChange={handleChange}>
@@ -95,7 +84,7 @@ function CreatePostPage() {
                     onChange={handleChange}
                 />
 
-                <button className="bg-blue-500 text-white p-2">
+                <button className="bg-blue-500 p-2 text-white">
                     Submit Post
                 </button>
             </form>

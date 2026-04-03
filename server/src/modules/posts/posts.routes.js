@@ -5,16 +5,22 @@ import {
     createPost,
     updatePost,
     deletePost,
-    incrementPostViews
+    incrementPostViews,
+    addComment,
+    incrementPostLikes,
 } from "./posts.controller.js";
+import { requireAuth } from "../../middleware/requireAuth.js";
 
 const router = express.Router();
 
-router.post("/", createPost);
 router.get("/", getPosts);
 router.get("/:id", getPost);
-router.patch("/:id", updatePost);
-router.delete("/:id", deletePost);
 router.post("/:id/view", incrementPostViews);
+router.post("/:id/like", requireAuth, incrementPostLikes);
+
+router.post("/", requireAuth, createPost);
+router.patch("/:id", requireAuth, updatePost);
+router.delete("/:id", requireAuth, deletePost);
+router.post("/:id/comments", requireAuth, addComment);
 
 export default router;

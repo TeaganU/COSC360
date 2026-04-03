@@ -7,10 +7,14 @@ import {
 } from "../../skills/components/skillsOptions";
 import PostComments from "../components/PostComments";
 import { PATHS } from "../../../app/Routes";
+import { apiClient } from "../../../lib/ApiClient";
+import { useAuth } from "../../../lib/AuthContext";
+import { getImageUrl } from "../../../lib/getImageUrl";
 
 export default function PostPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { isLoggedIn, user } = useAuth();
 
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -25,6 +29,11 @@ export default function PostPage() {
         category: "Hiking",
         type: "question",
     });
+    const canModifyPost =
+        isLoggedIn &&
+        user &&
+        post &&
+        (user.id === post.authorId || user.role === "admin");
 
     useEffect(() => {
         let isMounted = true;
@@ -94,45 +103,21 @@ export default function PostPage() {
 
     const saveEdit = async () => {
         try {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(editForm),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not update post.");
-                return;
-            }
-
+            const data = await apiClient.patch(`/posts/${id}`, editForm);
             setPost(data.post);
             setEditing(false);
             setActionMessage("");
-        } catch {
-            setActionMessage("Could not update post.");
+        } catch (error) {
+            setActionMessage(error?.data?.message || "Could not update post.");
         }
     };
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: "DELETE",
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not delete post.");
-                return;
-            }
-
+            await apiClient.delete(`/posts/${id}`);
             navigate(PATHS.SKILLS);
-        } catch {
-            setActionMessage("Could not delete post.");
+        } catch (error) {
+            setActionMessage(error?.data?.message || "Could not delete post.");
         }
     };
 
@@ -140,68 +125,35 @@ export default function PostPage() {
         if (!post) return;
 
         try {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    likes: (post.likes || 0) + 1,
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not like post.");
-                return;
-            }
-
+            const data = await apiClient.post(`/posts/${id}/like`);
             setPost(data.post);
             setActionMessage("");
-        } catch {
-            setActionMessage("Could not like post.");
+        } catch (error) {
+            setActionMessage(error?.data?.message || "Could not like post.");
         }
     };
 
     const submitComment = async () => {
-        if (!post || !commentText.trim()) {
-            return;
-        }
-
-        const nextComments = [
-            ...(post.comments || []),
-            {
-                text: commentText.trim(),
-                authorId: null,
-                authorUsername: "Guest",
-            },
-        ];
+        if (!post || !commentText.trim()) return;
 
         try {
-            const response = await fetch(`/api/posts/${id}`, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    comments: nextComments,
-                }),
+            const data = await apiClient.post(`/posts/${id}/comments`, {
+                text: commentText.trim(),
             });
 
-            const data = await response.json();
+            setPost((current) => ({
+                ...current,
+                comments: [...(current.comments ?? []), data.comment],
+            }));
 
-            if (!response.ok) {
-                setActionMessage(data.message || "Could not add comment.");
-                return;
-            }
-
-            setPost(data.post);
             setCommentText("");
             setIsCreatingComment(false);
             setActionMessage("");
-        } catch {
-            setActionMessage("Could not add comment.");
+        } catch (error) {
+            console.error(error);
+            setActionMessage(
+                error?.data?.message || "Could not add comment."
+            );
         }
     };
 
@@ -310,7 +262,19 @@ export default function PostPage() {
                     <div className="mt-5 border-t border-gray-200 pt-4">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-full bg-gray-200" />
+                                
+                                {post.authorProfileImage ? (
+                                    
+                                    <img
+                                        src={getImageUrl(post.authorProfileImage)}
+                                        alt={`${post.authorUsername} profile`}
+                                        className="h-10 w-10 rounded-full border object-cover"
+                                    />
+                                ) : (
+                                    <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-white text-sm">
+                                        {post.authorUsername.slice(0, 2)}
+                                    </div>
+                                )}
                                 <span className="text-sm font-medium text-gray-800">
                                     {post.authorUsername || "Guest"}
                                 </span>
@@ -329,40 +293,44 @@ export default function PostPage() {
                                     Views ({post.views || 0})
                                 </div>
 
-                                {editing ? (
+                                {canModifyPost && (
                                     <>
+                                        {editing ? (
+                                            <>
+                                                <button
+                                                    type="button"
+                                                    onClick={saveEdit}
+                                                    className="bg-black px-3 py-2 text-sm text-white hover:cursor-pointer"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setEditing(false)}
+                                                    className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditing(true)}
+                                                className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer"
+                                            >
+                                                Edit
+                                            </button>
+                                        )}
+
                                         <button
                                             type="button"
-                                            onClick={saveEdit}
-                                            className="bg-black px-3 py-2 text-sm text-white hover:cursor-pointer"
+                                            onClick={deletePost}
+                                            className="border border-red-300 px-3 py-2 text-sm text-red-600 hover:cursor-pointer"
                                         >
-                                            Save
-                                        </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => setEditing(false)}
-                                            className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer"
-                                        >
-                                            Cancel
+                                            Delete
                                         </button>
                                     </>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        onClick={() => setEditing(true)}
-                                        className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer"
-                                    >
-                                        Edit
-                                    </button>
                                 )}
-
-                                <button
-                                    type="button"
-                                    onClick={deletePost}
-                                    className="border border-red-300 px-3 py-2 text-sm text-red-600 hover:cursor-pointer"
-                                >
-                                    Delete
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -370,6 +338,7 @@ export default function PostPage() {
 
                 <PostComments
                     comments={post.comments || []}
+                    isLoggedIn={isLoggedIn}
                     isCreatingComment={isCreatingComment}
                     commentText={commentText}
                     onCommentTextChange={setCommentText}

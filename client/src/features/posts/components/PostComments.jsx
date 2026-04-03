@@ -1,7 +1,9 @@
 import { RelativeTime } from "../../../lib/RelativeTime";
+import { getImageUrl } from "../../../lib/getImageUrl";
 
 export default function PostComments({
     comments,
+    isLoggedIn,
     isCreatingComment,
     commentText,
     onCommentTextChange,
@@ -15,7 +17,8 @@ export default function PostComments({
         <section className="mt-6 border border-gray-300 bg-white p-4">
             <div className="flex items-center justify-between gap-3">
                 <h2 className="text-xl font-semibold text-gray-900">Comments</h2>
-                {!isCreatingComment && (
+
+                {isLoggedIn && !isCreatingComment && (
                     <button
                         type="button"
                         onClick={onOpenCreateComment}
@@ -26,31 +29,58 @@ export default function PostComments({
                 )}
             </div>
 
+            {!isLoggedIn && (
+                <p className="mt-4 text-sm text-gray-600">
+                    Log in to add a comment.
+                </p>
+            )}
+
             {safeComments.length === 0 && !isCreatingComment && (
                 <p className="mt-4 text-sm text-gray-600">No comments</p>
             )}
 
             {safeComments.length > 0 && (
                 <div className="mt-4 space-y-3">
-                    {safeComments.map((comment, index) => (
-                        <div key={comment._id ?? index} className="border border-gray-200 p-3">
-                            <div className="flex items-center justify-between gap-3">
-                                <span className="text-sm font-medium text-gray-800">
-                                    {comment.authorUsername || "Guest"}
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                    {RelativeTime(comment.createdAt)}
-                                </span>
+                    {safeComments.map((comment, index) => {
+                        const username = comment.authorUsername || "Guest";
+                        const initials = username.slice(0, 2).toUpperCase();
+
+                        return (
+                            <div key={comment._id ?? index} className="border border-gray-200 p-3">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        {comment.authorProfileImage ? (
+                                            <img
+                                                src={getImageUrl(comment.authorProfileImage)}
+                                                alt={`${username} profile`}
+                                                className="h-10 w-10 rounded-full border object-cover"
+                                            />
+                                        ) : (
+                                            <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-white text-sm">
+                                                {initials}
+                                            </div>
+                                        )}
+
+                                        <span className="text-sm font-medium text-gray-800">
+                                            {username}
+                                        </span>
+                                    </div>
+
+                                    <span className="text-xs text-gray-500">
+                                        {RelativeTime(comment.createdAt)}
+                                    </span>
+                                </div>
+
+                                <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
+                                    {comment.text}
+                                </p>
                             </div>
-                            <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
-                                {comment.text}
-                            </p>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
 
-            {isCreatingComment && (
+            {isLoggedIn && isCreatingComment && (
                 <div className="mt-4 flex flex-col gap-3">
                     <textarea
                         value={commentText}

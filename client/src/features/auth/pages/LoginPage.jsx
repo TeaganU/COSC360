@@ -1,9 +1,9 @@
 import LoginForm from "../components/LoginForm";
 
-export default function Login() {
+export default function LoginPage() {
   return (
-    <section className="p-8">
-      <h1 className="text-2xl font-semibold mb-4"><LoginForm /></h1>
+    <section className="min-h-[70vh] px-4 py-10">
+      <LoginForm />
     </section>
   );
 }

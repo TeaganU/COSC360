@@ -28,6 +28,7 @@ mongoose
 
 app.use("/api/posts", postsRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/uploads", express.static(path.resolve(__dirname, "../uploads")));
 
 app.get("/", (req, res) => {
   res.send("API running");

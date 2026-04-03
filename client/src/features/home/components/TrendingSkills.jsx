@@ -3,8 +3,15 @@ import { Link } from "react-router-dom";
 import { PATHS } from "../../../app/Routes";
 import TrendingSkillsCard from "./TrendingSkillsCard";
 
+const FILTER_OPTIONS = [
+    { value: "likes", label: "Likes" },
+    { value: "views", label: "Views" },
+    { value: "comments", label: "Comments" },
+];
+
 export default function TrendingSkills() {
     const [posts, setPosts] = useState([]);
+    const [sortBy, setSortBy] = useState("likes");
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
@@ -23,14 +30,25 @@ export default function TrendingSkills() {
                 const data = await response.json();
                 const recentPosts = [...data]
                     .sort((a, b) => {
-                        const viewDiff = (b.views || 0) - (a.views || 0);
-                        const likesDiff = (b.likes || 0) - (a.likes || 0);
+                        const metricValue = (post) => {
+                            if (sortBy === "views") {
+                                return post.views || 0;
+                            }
 
-                        if (likesDiff !== 0) {
-                            return likesDiff;
+                            if (sortBy === "comments") {
+                                return post.comments?.length || 0;
+                            }
+
+                            return post.likes || 0;
+                        };
+
+                        const metricDiff = metricValue(b) - metricValue(a);
+
+                        if (metricDiff !== 0) {
+                            return metricDiff;
                         }
 
-                        return (b.comments?.length || 0) - (a.comments?.length || 0);
+                        return new Date(b.createdAt) - new Date(a.createdAt);
                     })
                     .slice(0, 6);
 
@@ -44,7 +62,7 @@ export default function TrendingSkills() {
         }
 
         fetchTrendingSkills();
-    }, []);
+    }, [sortBy]);
 
     return (
         <section className="flex flex-col border 2px black min-h-40 px-3 py-1.5 gap-y-2">
@@ -53,11 +71,28 @@ export default function TrendingSkills() {
                     Trending Skills
                 </h1>
 
-                <Link
-                    to={PATHS.SKILLS}
-                    className="text-gray-700">
-                    View All
-                </Link>
+                <div className="flex items-center gap-3">
+                    <label className="flex items-center gap-2 text-sm text-gray-700">
+                        <span>Sort by</span>
+                        <select
+                            value={sortBy}
+                            onChange={(event) => setSortBy(event.target.value)}
+                            className="rounded border border-gray-300 bg-white px-2 py-1 text-sm"
+                        >
+                            {FILTER_OPTIONS.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </label>
+
+                    <Link
+                        to={PATHS.SKILLS}
+                        className="text-gray-700">
+                        View All
+                    </Link>
+                </div>
             </div>
             <div className="flex flex-row justify-between gap-3 overflow-x-auto flex-1 p-2">
                 {loading && <p className="text-sm text-gray-600">Loading trending skills...</p>}

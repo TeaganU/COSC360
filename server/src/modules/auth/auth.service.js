@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import {
     findUserByEmail,
     findUserByUsername,
@@ -8,7 +9,7 @@ import {
 const emailRegex = /^(.+)@([^\.].*)\.([a-z]{2,})$/i;
 const usernameRegex = /^[a-zA-Z0-9_]+$/;
 
-export async function registerUser({ username, email, password }) {
+export async function registerUser({ username, email, password, profileImage }) {
     const errors = {};
 
     const cleanUsername = username?.trim();
@@ -62,6 +63,7 @@ export async function registerUser({ username, email, password }) {
         username: cleanUsername,
         email: cleanEmail,
         passwordHash,
+        profileImage: profileImage ?? "",
     });
 
     return {
@@ -71,6 +73,75 @@ export async function registerUser({ username, email, password }) {
             id: user._id,
             username: user.username,
             email: user.email,
+            profileImage: user.profileImage,
+            role: user.role,
+        },
+    };
+}
+
+export async function loginUser({ email, password }) {
+    const errors = {};
+
+    const cleanEmail = email?.trim().toLowerCase();
+
+    if (!cleanEmail) {
+        errors.email = "Email is required";
+    }
+
+    if (!password) {
+        errors.password = "Password is required";
+    }
+
+    if (Object.keys(errors).length > 0) {
+        return { ok: false, status: 400, errors };
+    }
+
+    const user = await findUserByEmail(cleanEmail);
+
+    if (!user) {
+        return {
+            ok: false,
+            status: 401,
+            errors: { general: "Invalid email or password" },
+        };
+    }
+
+    if (user.isDisabled) {
+        return {
+            ok: false,
+            status: 403,
+            errors: { general: "This account has been disabled" },
+        };
+    }
+
+    const passwordMatches = await bcrypt.compare(password, user.passwordHash);
+
+    if (!passwordMatches) {
+        return {
+            ok: false,
+            status: 401,
+            errors: { general: "Invalid email or password" },
+        };
+    }
+
+    const token = jwt.sign(
+        {
+            sub: user._id.toString(),
+            role: user.role,
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+
+    return {
+        ok: true,
+        status: 200,
+        token,
+        user: {
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            profileImage: user.profileImage,
             role: user.role,
         },
     };
