@@ -1,1 +1,5 @@
-// Something goes here (copying structure from cosc360 demo code)
+import { AuthProvider } from "../lib/AuthContext";
+
+export default function Providers({ children }) {
+    return <AuthProvider>{children}</AuthProvider>;
+}

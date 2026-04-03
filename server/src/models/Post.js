@@ -17,6 +17,11 @@ const commentSchema = new mongoose.Schema(
       default: "Guest",
       trim: true,
     },
+    authorProfileImage: {
+      type: String,
+      default: "",
+      trim: true,
+    },
   },
   {
     _id: true,
@@ -35,6 +40,11 @@ const postSchema = new mongoose.Schema(
     authorUsername: {
       type: String,
       default: "Guest",
+      trim: true,
+    },
+    authorProfileImage: {
+      type: String,
+      default: "",
       trim: true,
     },
     type: {

@@ -12,3 +12,7 @@ export async function createUser(userData) {
     const user = new User(userData);
     return user.save();
 }
+
+export async function findUserByEmailWithPassword(email) {
+  return User.findOne({ email: email.toLowerCase() });
+}

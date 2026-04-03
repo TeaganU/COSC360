@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import { RelativeTime } from "../../../lib/RelativeTime";
 import { PATHS } from "../../../app/Routes";
+import { getImageUrl } from "../../../lib/getImageUrl";
 
 export default function RecentQuestionsCard({ post }) {
+    const username = post.authorUsername || "Author Name";
+    const initials = username.slice(0, 2).toUpperCase();
+
     return (
         <Link to={PATHS.POST(post._id)}
             className="flex w-full px-2 py-1 items-center justify-between bg-white border border-gray-300 rounded-lg 
@@ -18,9 +22,19 @@ export default function RecentQuestionsCard({ post }) {
                 </span>
 
                 <div className="flex items-center gap-3 mt-auto">
-                    <div className="h-8 w-8 rounded-full bg-gray-200" />
+                    {post.authorProfileImage ? (
+                        <img
+                            src={getImageUrl(post.authorProfileImage)}
+                            alt={`${username} profile`}
+                            className="h-8 w-8 rounded-full border object-cover"
+                        />
+                    ) : (
+                        <div className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs text-white">
+                            {initials}
+                        </div>
+                    )}
                     <span className="text-sm font-medium text-gray-800">
-                        {post.authorUsername || "Author Name"}
+                        {username}
                     </span>
                 </div>
             </div>

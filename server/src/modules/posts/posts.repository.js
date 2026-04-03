@@ -59,6 +59,14 @@ export async function findPostById(id) {
   return await Post.findById(id).lean();
 }
 
+export async function findPostDocumentById(id) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
+
+  return await Post.findById(id);
+}
+
 export async function addPost(newPost) {
   const doc = new Post({
     likes: 0,
@@ -99,6 +107,18 @@ export async function incrementPostViews(id) {
   return await Post.findByIdAndUpdate(
     id,
     { $inc: { views: 1 } },
+    { new: true }
+  ).lean();
+}
+
+export async function incrementPostLikes(id) {
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return null;
+  }
+
+  return await Post.findByIdAndUpdate(
+    id,
+    { $inc: { likes: 1 } },
     { new: true }
   ).lean();
 }

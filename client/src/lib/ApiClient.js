@@ -1,1 +1,60 @@
-// # Centralized HTTP client
+const API_BASE_URL = "http://localhost:4000/api";
+const TOKEN_KEY = "authToken";
+
+async function request(path, options = {}) {
+    const isFormData = options.body instanceof FormData;
+    const token = localStorage.getItem(TOKEN_KEY);
+
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers: {
+            ...(isFormData ? {} : { "Content-Type": "application/json" }),
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(options.headers ?? {}),
+        },
+    });
+
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch {
+        data = null;
+    }
+
+    if (!response.ok) {
+        const error = new Error(data?.general || data?.message || "Request failed");
+        error.status = response.status;
+        error.data = data;
+        throw error;
+    }
+
+    return data;
+}
+
+export const apiClient = {
+    get(path) {
+        return request(path, { method: "GET" });
+    },
+    post(path, body) {
+        return request(path, {
+            method: "POST",
+            body: body instanceof FormData ? body : JSON.stringify(body),
+        });
+    },
+    patch(path, body) {
+        return request(path, {
+            method: "PATCH",
+            body: body instanceof FormData ? body : JSON.stringify(body),
+        });
+    },
+    put(path, body) {
+        return request(path, {
+            method: "PUT",
+            body: body instanceof FormData ? body : JSON.stringify(body),
+        });
+    },
+    delete(path) {
+        return request(path, { method: "DELETE" });
+    },
+};

@@ -1,10 +1,12 @@
 import {
   addPost,
   findPostById,
+  findPostDocumentById,
   findPosts,
   updatePostById,
   deletePostById,
-  incrementPostViews
+  incrementPostViews,
+  incrementPostLikes
 } from "./posts.repository.js";
 
 function requireString(value, fieldName) {
@@ -12,6 +14,20 @@ function requireString(value, fieldName) {
     throw new Error(`${fieldName} is required`);
   }
   return value.trim();
+}
+
+function requireAuthenticatedUser(user) {
+  if (!user || !user._id) {
+    throw new Error("Authentication required");
+  }
+}
+
+function canModifyPost(post, user) {
+  if (!post.authorId || !user?._id) return false;
+  return (
+    post.authorId.toString() === user._id.toString() ||
+    user.role === "admin"
+  );
 }
 
 export async function searchPosts({ search, category, type }) {
@@ -25,7 +41,9 @@ export async function getPostRecord(idParam) {
   return post;
 }
 
-export async function createPostRecord(body, user = null) {
+export async function createPostRecord(body, user) {
+  requireAuthenticatedUser(user);
+
   const type = requireString(body.type, "type");
   const category = requireString(body.category, "category");
   const title = requireString(body.title, "title");
@@ -36,12 +54,22 @@ export async function createPostRecord(body, user = null) {
     category,
     title,
     content,
-    authorId: user?._id ?? null,
-    authorUsername: user?.username ?? "Guest",
+    authorId: user._id,
+    authorUsername: user.username,
+    authorProfileImage: user.profileImage ?? "",
   });
 }
 
-export async function updatePostRecord(idParam, body) {
+export async function updatePostRecord(idParam, body, user) {
+  requireAuthenticatedUser(user);
+
+  const existingPost = await findPostById(idParam);
+  if (!existingPost) throw new Error("Post not found");
+
+  if (!canModifyPost(existingPost, user)) {
+    throw new Error("Not allowed to edit this post");
+  }
+
   const updates = {};
 
   if (body.type !== undefined) updates.type = requireString(body.type, "type");
@@ -64,18 +92,7 @@ export async function updatePostRecord(idParam, body) {
   }
 
   if (body.comments !== undefined) {
-    if (!Array.isArray(body.comments)) {
-      throw new Error("comments must be an array");
-    }
-
-    updates.comments = body.comments.map((comment) => ({
-      text: requireString(comment?.text, "comment text"),
-      authorId: comment?.authorId ?? null,
-      authorUsername:
-        typeof comment?.authorUsername === "string" && comment.authorUsername.trim()
-          ? comment.authorUsername.trim()
-          : "Guest",
-    }));
+    throw new Error("Comments cannot be updated through this route");
   }
 
   if (Object.keys(updates).length === 0) {
@@ -88,6 +105,35 @@ export async function updatePostRecord(idParam, body) {
   return updated;
 }
 
+export async function addCommentRecord(idParam, body, user) {
+  requireAuthenticatedUser(user);
+
+  const post = await findPostDocumentById(idParam);
+  if (!post) throw new Error("Post not found");
+
+  const text = requireString(body.text, "comment text");
+
+  post.comments.push({
+    text,
+    authorId: user._id,
+    authorUsername: user.username,
+    authorProfileImage: user.profileImage ?? "",
+  });
+
+  await post.save();
+
+  return post.comments[post.comments.length - 1];
+}
+
+export async function incrementPostLikesRecord(idParam, user) {
+  requireAuthenticatedUser(user);
+
+  const updated = await incrementPostLikes(idParam);
+  if (!updated) throw new Error("Post not found");
+
+  return updated;
+}
+
 export async function incrementPostViewsRecord(idParam) {
   const updated = await incrementPostViews(idParam);
   if (!updated) throw new Error("Post not found");
@@ -95,7 +141,16 @@ export async function incrementPostViewsRecord(idParam) {
   return updated;
 }
 
-export async function deletePostRecord(idParam) {
+export async function deletePostRecord(idParam, user) {
+  requireAuthenticatedUser(user);
+
+  const existingPost = await findPostById(idParam);
+  if (!existingPost) throw new Error("Post not found");
+
+  if (!canModifyPost(existingPost, user)) {
+    throw new Error("Not allowed to delete this post");
+  }
+
   const deleted = await deletePostById(idParam);
   if (!deleted) throw new Error("Post not found");
 }

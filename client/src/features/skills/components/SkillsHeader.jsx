@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import { PATHS } from "../../../app/Routes";
+import { useAuth } from "../../../lib/AuthContext";
 
 export default function SkillsHeader({ searchText }) {
+    const { isLoggedIn } = useAuth();
+
     return (
         <div className="mb-6 flex flex-col gap-2">
                 <p className="text-sm text-gray-500">
@@ -19,12 +22,14 @@ export default function SkillsHeader({ searchText }) {
                         Browse Skills
                     </h1>
 
-                    <Link
-                        to={PATHS.CREATEPOST}
-                        className="inline-block bg-black px-4 py-2 text-white"
-                    >
-                        Create Post
-                    </Link>
+                    {isLoggedIn && (
+                        <Link
+                            to={PATHS.CREATEPOST}
+                            className="inline-block bg-black px-4 py-2 text-white"
+                        >
+                            Create Post
+                        </Link>
+                    )}
                 </div>
                 
 
