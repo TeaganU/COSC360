@@ -14,7 +14,7 @@ const uploadProfileImage = multer({
     storage: multer.memoryStorage(),
     fileFilter,
     limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: 1 * 1024 * 1024,
     },
 });
 
