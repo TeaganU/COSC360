@@ -17,6 +17,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const app = express();
+const port = Number(process.env.PORT) || 4000;
 
 app.use(cors());
 app.use(express.json());
@@ -40,6 +41,6 @@ app.get("/", (req, res) => {
   res.send("API running");
 });
 
-app.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
 });
