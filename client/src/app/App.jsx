@@ -7,8 +7,9 @@ import SkillsPage from '../features/skills/pages/SkillsPage';
 import CreatePostPage from "../features/posts/pages/CreatePostPage";
 import PostPage from "../features/posts/pages/PostPage";
 import AdminPage from "../features/admin/pages/AdminPage";
+import ProfilePage from "../features/profile/pages/ProfilePage";
 import { PATHS } from "./Routes"
-import SignupPage from '../features/auth/pages/SignUpPage';
+import SignupPage from "../features/auth/pages/SignupPage";
 
 //note: for lab 7, temporarily added a create post button on home page, to be changed later
 
@@ -23,7 +24,7 @@ function App() {
         <Route path={PATHS.CREATEPOST} element={<CreatePostPage />} />
         <Route path={PATHS.LOGIN} element={<Login />} />
         <Route path={PATHS.SIGNUP} element={<SignupPage />} />
-        <Route path={PATHS.PROFILE} element={<div className="p-8">Profile page</div>} />
+        <Route path={PATHS.PROFILE} element={<ProfilePage />} />
         <Route path={PATHS.ADMIN} element={<AdminPage />} />
       </Routes>
       <Footer />

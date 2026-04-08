@@ -63,6 +63,7 @@ export async function registerUser({ username, email, password, profileImage }) 
     const user = await createUser({
         username: cleanUsername,
         email: cleanEmail,
+        fullName: cleanUsername,
         passwordHash,
         profileImage: profileImage ?? undefined,
     });

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
 const AuthContext = createContext(null);
@@ -38,6 +39,10 @@ export function AuthProvider({ children }) {
         setUser(null);
     }
 
+    function updateUser(nextUser) {
+        setUser(nextUser);
+    }
+
     const value = useMemo(
         () => ({
             token,
@@ -45,6 +50,7 @@ export function AuthProvider({ children }) {
             isLoggedIn: Boolean(token && user),
             login,
             logout,
+            updateUser,
         }),
         [token, user]
     );
