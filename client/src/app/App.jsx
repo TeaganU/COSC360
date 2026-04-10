@@ -13,8 +13,7 @@ import SignupPage from "../features/auth/pages/SignupPage";
 import { useAuth } from "../lib/AuthContext";
 import AdminBannedUsersPage from "../features/admin/pages/AdminBannedUsersPage";
 import BannedPage from "../features/auth/pages/BannedPage";
-
-//note: for lab 7, temporarily added a create post button on home page, to be changed later
+import NotFoundPage from './NotFoundPage';
 
 function AppLayout() {
   const location = useLocation();
@@ -38,6 +37,7 @@ function AppLayout() {
         <Route path={PATHS.PROFILE} element={<ProfilePage />} />
         <Route path={PATHS.ADMIN} element={<AdminPage />} />
         <Route path={PATHS.ADMIN_DISABLED_USERS} element={<AdminBannedUsersPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </div>
