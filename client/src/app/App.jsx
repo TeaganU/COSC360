@@ -9,6 +9,7 @@ import PostPage from "../features/posts/pages/PostPage";
 import AdminPage from "../features/admin/pages/AdminPage";
 import { PATHS } from "./Routes"
 import SignupPage from '../features/auth/pages/SignUpPage';
+import NotFoundPage from './NotFoundPage';
 
 //note: for lab 7, temporarily added a create post button on home page, to be changed later
 
@@ -25,6 +26,7 @@ function App() {
         <Route path={PATHS.SIGNUP} element={<SignupPage />} />
         <Route path={PATHS.PROFILE} element={<div className="p-8">Profile page</div>} />
         <Route path={PATHS.ADMIN} element={<AdminPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </div>
