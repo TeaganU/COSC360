@@ -1,4 +1,5 @@
 import {
+  getAdminAnalyticsRecord,
   disableUserRecord,
   dismissReportRecord,
   getAdminDashboardRecord,
@@ -14,6 +15,22 @@ export async function getAdminDashboard(req, res) {
     res.json(dashboard);
   } catch {
     res.status(500).json({ message: "Could not load admin dashboard" });
+  }
+}
+
+export async function getAdminAnalytics(req, res) {
+  try {
+    const analytics = await getAdminAnalyticsRecord(req.query);
+    res.json(analytics);
+  } catch (error) {
+    const status =
+      error.message === "Invalid analytics range" ||
+      error.message === "A valid start and end date are required" ||
+      error.message === "Start date must be before end date"
+        ? 400
+        : 500;
+
+    res.status(status).json({ message: error.message || "Could not load admin analytics" });
   }
 }
 

@@ -2,6 +2,7 @@ import express from "express";
 import { requireAuth } from "../../middleware/requireAuth.js";
 import { requireAdmin } from "../../middleware/requireAdmin.js";
 import {
+  getAdminAnalytics,
   disableUser,
   dismissReport,
   getAdminDashboard,
@@ -16,6 +17,7 @@ const router = express.Router();
 router.use(requireAuth, requireAdmin);
 
 router.get("/dashboard", getAdminDashboard);
+router.get("/analytics", getAdminAnalytics);
 router.get("/users/search", searchUsers);
 router.get("/disabled-users", getDisabledUsers);
 router.get("/posts/recent", getRecentAdminPosts);

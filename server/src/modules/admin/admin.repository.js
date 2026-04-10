@@ -7,6 +7,21 @@ export async function countUsers() {
   return await User.countDocuments();
 }
 
+export async function findUsersCreatedBetween(startDate, endDate) {
+  return await User.find(
+    {
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    },
+    {
+      _id: 1,
+      createdAt: 1,
+    }
+  ).lean();
+}
+
 export async function countPosts() {
   return await Post.countDocuments();
 }
@@ -33,6 +48,25 @@ export async function findRecentPosts(limit = 6) {
     .sort({ createdAt: -1 })
     .limit(limit)
     .lean();
+}
+
+export async function findPostsCreatedBetween(startDate, endDate) {
+  return await Post.find(
+    {
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    },
+    {
+      _id: 1,
+      title: 1,
+      views: 1,
+      likes: 1,
+      createdAt: 1,
+      comments: 1,
+    }
+  ).lean();
 }
 
 export async function findRecentPostsPage(page = 1, limit = 6) {
@@ -76,6 +110,22 @@ export async function dismissReportById(reportId, adminUser) {
       },
     },
     { new: true }
+  ).lean();
+}
+
+export async function findReportsCreatedBetween(startDate, endDate) {
+  return await Report.find(
+    {
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    },
+    {
+      _id: 1,
+      reason: 1,
+      createdAt: 1,
+    }
   ).lean();
 }
 
@@ -173,6 +223,22 @@ export async function findUserById(userId) {
 export async function findDisabledUsers(limit = 100) {
   return await User.find({ isDisabled: true })
     .sort({ updatedAt: -1, createdAt: -1 })
+    .limit(limit)
+    .lean();
+}
+
+export async function findTopPostsByViews(limit = 5) {
+  return await Post.find(
+    {},
+    {
+      _id: 1,
+      title: 1,
+      views: 1,
+      likes: 1,
+      authorUsername: 1,
+    }
+  )
+    .sort({ views: -1, likes: -1, createdAt: -1 })
     .limit(limit)
     .lean();
 }

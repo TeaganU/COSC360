@@ -7,6 +7,7 @@ export const PATHS = {
     SIGNUP: "/signup",
     PROFILE: "/profile",
     ADMIN: "/admin",
+    ADMIN_ANALYTICS: "/admin/analytics",
     ADMIN_DISABLED_USERS: "/admin/disabled-users",
     BANNED: "/banned",
 }
