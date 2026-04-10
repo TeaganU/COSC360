@@ -9,10 +9,10 @@ import {
 } from "./posts.service.js";
 
 export async function getPosts(req, res) {
-  const { search, category, type } = req.query;
+  const { search, category, type, sort } = req.query;
 
   try {
-    const results = await searchPosts({ search, category, type });
+    const results = await searchPosts({ search, category, type, sort });
     res.json(results);
   } catch (err) {
     res.status(500).json({ message: "Error fetching posts" });

@@ -30,8 +30,8 @@ function canModifyPost(post, user) {
   );
 }
 
-export async function searchPosts({ search, category, type }) {
-  return await findPosts({ search, category, type });
+export async function searchPosts({ search, category, type, sort }) {
+  return await findPosts({ search, category, type, sort });
 }
 
 export async function getPostRecord(idParam) {

@@ -9,7 +9,8 @@ function normalizeToArray(value) {
   const values = Array.isArray(value) ? value : [value];
 
   return values
-    .map((item) => String(item).trim())
+    .flatMap((item) => String(item).split(","))
+    .map((item) => item.trim())
     .filter((item) => item !== "" && item !== "All");
 }
 
@@ -46,9 +47,35 @@ function buildQuery({ search, category, type, authorId }) {
   return query;
 }
 
+function buildSort(sort) {
+  if (sort === "likes") {
+    return { likes: -1, createdAt: -1 };
+  }
+
+  if (sort === "views") {
+    return { views: -1, createdAt: -1 };
+  }
+
+  if (sort === "comments") {
+    return { commentsCount: -1, createdAt: -1 };
+  }
+
+  return { createdAt: -1 };
+}
+
 export async function findPosts(filters = {}) {
   const query = buildQuery(filters);
-  return await Post.find(query).sort({ createdAt: -1 }).lean();
+  const sort = buildSort(filters.sort);
+
+  return await Post.aggregate([
+    { $match: query },
+    {
+      $addFields: {
+        commentsCount: { $size: { $ifNull: ["$comments", []] } }
+      }
+    },
+    { $sort: sort }
+  ]);
 }
 
 export async function findPostById(id) {
