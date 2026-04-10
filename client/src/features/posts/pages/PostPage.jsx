@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { RelativeTime } from "../../../lib/RelativeTime";
 import {
     editableCategoryOptions,
@@ -15,7 +15,9 @@ import ReportModal from "../../reports/components/ReportModal";
 export default function PostPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { isLoggedIn, user } = useAuth();
+    const highlightedCommentId = searchParams.get("commentId") || "";
 
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -24,6 +26,7 @@ export default function PostPage() {
     const [editing, setEditing] = useState(false);
     const [isCreatingComment, setIsCreatingComment] = useState(false);
     const [isReportingPost, setIsReportingPost] = useState(false);
+    const [isLikingPost, setIsLikingPost] = useState(false);
     const [commentText, setCommentText] = useState("");
     const [editForm, setEditForm] = useState({
         title: "",
@@ -68,6 +71,22 @@ export default function PostPage() {
                     type: data.type || "question",
                 });
 
+                if (isLoggedIn) {
+                    try {
+                        const likeStatus = await apiClient.get(`/like/${id}/me`);
+
+                        if (isMounted) {
+                            setPost((current) => current ? {
+                                ...current,
+                                likes: likeStatus.likesCount,
+                                likedByCurrentUser: likeStatus.liked,
+                            } : current);
+                        }
+                    } catch {
+                        // Ignore like status errors so the page still loads
+                    }
+                }
+
                 try {
                     const viewResponse = await fetch(`/api/posts/${id}/view`, {
                         method: "POST",
@@ -77,7 +96,10 @@ export default function PostPage() {
                         const viewData = await viewResponse.json();
 
                         if (isMounted && viewData.post) {
-                            setPost(viewData.post);
+                            setPost((current) => current ? {
+                                ...viewData.post,
+                                likedByCurrentUser: current.likedByCurrentUser,
+                            } : viewData.post);
                         }
                     }
                 } catch {
@@ -99,7 +121,19 @@ export default function PostPage() {
         return () => {
             isMounted = false;
         };
-    }, [id]);
+    }, [id, isLoggedIn]);
+
+    useEffect(() => {
+        if (!highlightedCommentId || !post) {
+            return;
+        }
+
+        const target = document.getElementById(`comment-${highlightedCommentId}`);
+
+        if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+    }, [highlightedCommentId, post]);
 
     const handleEditChange = (e) => {
         setEditForm({
@@ -129,14 +163,21 @@ export default function PostPage() {
     };
 
     const likePost = async () => {
-        if (!post) return;
+        if (!post || isLikingPost) return;
 
         try {
-            const data = await apiClient.post(`/posts/${id}/like`);
-            setPost(data.post);
+            setIsLikingPost(true);
+            const data = await apiClient.post(`/like/${id}`);
+            setPost((current) => current ? {
+                ...current,
+                likes: data.likesCount,
+                likedByCurrentUser: data.liked,
+            } : current);
             setActionMessage("");
         } catch (error) {
             setActionMessage(error?.data?.message || "Could not like post.");
+        } finally {
+            setIsLikingPost(false);
         }
     };
 
@@ -291,9 +332,10 @@ export default function PostPage() {
                                 <button
                                     type="button"
                                     onClick={likePost}
-                                    className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer"
+                                    disabled={isLikingPost}
+                                    className="border border-gray-300 px-3 py-2 text-sm hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                                 >
-                                    Likes ({post.likes || 0})
+                                    {post.likedByCurrentUser ? "Unlike" : "Like"} ({post.likes || 0})
                                 </button>
 
                                 <div className="border border-gray-300 px-3 py-2 text-sm text-gray-700">
@@ -356,6 +398,7 @@ export default function PostPage() {
                 <PostComments
                     postId={post._id}
                     comments={post.comments || []}
+                    highlightedCommentId={highlightedCommentId}
                     isLoggedIn={isLoggedIn}
                     currentUserId={user?.id || ""}
                     isCreatingComment={isCreatingComment}
