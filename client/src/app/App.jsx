@@ -14,6 +14,7 @@ import { useAuth } from "../lib/AuthContext";
 import AdminBannedUsersPage from "../features/admin/pages/AdminBannedUsersPage";
 import BannedPage from "../features/auth/pages/BannedPage";
 import NotFoundPage from './NotFoundPage';
+import AdminAnalyticsPage from '../features/admin/pages/AdminAnalyticsPage';
 
 function AppLayout() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function AppLayout() {
         <Route path={PATHS.BANNED} element={<BannedPage />} />
         <Route path={PATHS.PROFILE} element={<ProfilePage />} />
         <Route path={PATHS.ADMIN} element={<AdminPage />} />
+        <Route path={PATHS.ADMIN_ANALYTICS} element={<AdminAnalyticsPage />} />
         <Route path={PATHS.ADMIN_DISABLED_USERS} element={<AdminBannedUsersPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

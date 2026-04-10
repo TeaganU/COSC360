@@ -36,6 +36,12 @@ function AdminTopBar() {
           Dashboard
         </Link>
         <Link
+          to={PATHS.ADMIN_ANALYTICS}
+          className="border border-gray-300 px-4 py-2 text-sm"
+        >
+          Analytics
+        </Link>
+        <Link
           to={PATHS.ADMIN_DISABLED_USERS}
           className="border border-gray-300 px-4 py-2 text-sm"
         >
