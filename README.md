@@ -93,5 +93,3 @@ The site should work in all browsers with responsive layouts for mobile devices
 
 Link to our proposed design on Figma:
 https://www.figma.com/design/lSrssBYxDJEZIBw0CfxiZZ/Client-Side-Experience?node-id=15-304&t=Z4DyMs10LKGvURjp-1
-
-
