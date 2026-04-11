@@ -3,7 +3,7 @@ Owen Strolle - 68489996, Teagan Urquhart - 21161880
 
 ## Documentation
 - [Walkthrough Guide](./Walkthrough.pdf)
-- [Implementation Guide](./docs/Implementation-Guide.pdf)
+- [Implementation Guide](./Implementation-Description.pdf)
 
 ## Quick Start
 
