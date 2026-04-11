@@ -7,7 +7,7 @@ export default function ProfileCommentsCard({ comment }) {
 
     return (
         <Link to={destination}
-            className="flex flex-col w-full bg-white border border-gray-300 
+            className="flex flex-col w-full px-2 py-1 bg-white border border-gray-300 
             hover:cursor-pointer hover:border-gray-500 hover:-translate-x-0.5">
             <div className="flex justify-between text-xs text-gray-600">
                 <span>
@@ -25,9 +25,6 @@ export default function ProfileCommentsCard({ comment }) {
             <p className="mt-2 text-sm text-gray-700">
                 {comment.text || "No comment text"}
             </p>
-            <div className="mt-3 text-sm text-gray-600">
-                View original post
-            </div>
         </Link>
     )
 }
