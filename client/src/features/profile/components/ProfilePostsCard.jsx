@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { RelativeTime } from "../../../lib/RelativeTime";
-import { PATHS } from "../../../app/Routes";
-import { getImageUrl } from "../../../lib/getImageUrl";
+import { RelativeTime } from "../../../lib/RelativeTime.js";
+import { PATHS } from "../../../app/Routes.jsx";
+import { getImageUrl } from "../../../lib/getImageUrl.js";
 
 export default function ProfilePostsCard({ post }) {
     const username = post.authorUsername || "Author Name";

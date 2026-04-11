@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { apiClient } from "../../../lib/ApiClient";
-import { reportReasons } from "./reportReasons";
+import { apiClient } from "../../../lib/ApiClient.js";
+import { reportReasons } from "./reportReasons.js";
 
 export default function ReportModal({
   isOpen,

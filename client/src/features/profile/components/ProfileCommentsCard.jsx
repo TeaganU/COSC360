@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { RelativeTime } from "../../../lib/RelativeTime";
-import { PATHS } from "../../../app/Routes";
+import { RelativeTime } from "../../../lib/RelativeTime.js";
+import { PATHS } from "../../../app/Routes.jsx";
 
 export default function ProfileCommentsCard({ comment }) {
     const destination = `${PATHS.POST(comment.postId)}?commentId=${comment._id}`;
