@@ -7,54 +7,26 @@ Owen Strolle - 68489996, Teagan Urquhart - 21161880
 
 ## Quick Start
 
-### 1. Install Dependencies:
-
-Install packages for the root, client, and server:
-
-```bash
-npm install
+To run the project, clone the GitHub repository and start the application using Docker:   
+```
+git clone https://github.com/TeaganU/Cache_Me_Outside.git
+```  
+```  
+cd Cache_Me_Outside
+```
+```   
+docker-compose up --build -d   
 ```
 
-This command:
+To stop and remove the project containers and volumes:   
+```   
+docker-compose down -v
+```    
 
-- Installs root-level dependencies
-- Installs dependencies in `client/` folder
-- Installs dependencies in `server/` folder
+After the containers finish building, open the site in your browser:
+Frontend: http://localhost:5173 
+Backend API: http://localhost:4000 
 
-### 2. Start the Server
-
-From the root directory:
-
-```bash
-npm start
-```
-
-## Docker
-
-### Docker Services
-
-- mongo for the database
-- server for the Express API
-- client for the Vite frontend
-
-### Start With Docker
-
-Make sure you are in the root directory   
-
-```
-docker compose up --build
-```
-
-Then open:
-
-- Frontend: http://localhost:5173
-- Backend: http://localhost:4000 (not much going on here)
-
-### Stop Docker
-
-```
-docker compose down -v
-```
 
 ## Project Proposal
 
