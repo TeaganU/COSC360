@@ -25,6 +25,7 @@ docker-compose down -v
 
 After the containers finish building, open the site in your browser:
 Frontend: http://localhost:5173 
+
 Backend API: http://localhost:4000 
 
 
